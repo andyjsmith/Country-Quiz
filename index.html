@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Country Quiz</title>
+	<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+	<link rel="manifest" href="icons/site.webmanifest">
+	<link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5">
+	<link rel="shortcut icon" href="icons/favicon.ico">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="msapplication-config" content="icons/browserconfig.xml">
+	<meta name="theme-color" content="#ffffff">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+	<link rel="stylesheet" href="style.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;700&display=swap" rel="stylesheet">
+	<script async defer data-domain="ajsmith.us" src="https://plausible-public.ajsmith.us/js/script.js"></script>
+</head>
+
+<body>
+	<!-- Map -->
+	<div id="map"></div>
+
+	<!-- Score/country box -->
+	<div class="box" id="score-box">
+		<p id="time">00:00:00</p>
+		<p id="score-line">Score: <span id="score">0</span></p>
+		<p><span id="country-name"></span></p>
+	</div>
+
+	<!-- Game over dialog -->
+	<div id="game-over" class="dialog">
+		<p>Game Over</p>
+		<p id="game-over-text">You selected <span id="incorrect-country"></span> instead of <span id="correct-country"></span>.</p>
+		<button onclick="location.reload()" class="btn btn-danger">Try Again</button>
+	</div>
+
+	<!-- Win dialog -->
+	<div id="you-win" class="dialog">
+		<p>You win!</p>
+		<p>You selected all of the countries correctly.</p>
+		<button onclick="location.reload()" class="btn">Play Again</button>
+	</div>
+
+	<!-- Settings dialog -->
+	<div id="settings" class="dialog-background">
+		<div class="dialog">
+			<h2>Settings</h2>
+			<form>
+				<fieldset>
+					<legend>Game Mode</legend>
+					<input type="radio" id="gamemode-normal" name="gamemode" value="normal" checked>
+					<label for="gamemode-normal"><span>Normal</span></label>
+					<input type="radio" id="gamemode-learning" name="gamemode" value="learning">
+					<label for="gamemode-learning"><span>Learning</span></label>
+					<input type="radio" id="gamemode-timetrial" name="gamemode" value="timetrial">
+					<label for="gamemode-timetrial"><span>Time Trial</span></label>
+					<input type="radio" id="gamemode-exploration" name="gamemode" value="exploration">
+					<label for="gamemode-exploration"><span>Exploration</span></label>
+					<div id="gamemode-description">Description</div>
+				</fieldset>
+				<fieldset id="timetrial-options">
+					<legend>Time Trial Duration</legend>
+					<input type="number" min="0" max="999" id="timetrial-duration-minutes">
+					<label for="timetrial-duration-minutes">mins</label>
+					<input type="number" min="0" max="59" id="timetrial-duration-seconds">
+					<label for="timetrial-duration-seconds">secs</label>
+				</fieldset>
+				<fieldset>
+					<legend>Options</legend>
+					<div class="settings-item">
+						<input type="checkbox" id="show-time-checkbox">
+						<label for="show-time-checkbox"><span>Show Elapsed Time</span></label>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>Hard Mode</legend>
+					<div class="settings-item">
+						<input type="checkbox" id="hide-hovered-country-highlights">
+						<label for="hide-hovered-country-highlights"><span>Don't highlight hovered
+								country</span></label>
+					</div>
+					<div class="settings-item">
+						<input type="checkbox" id="hide-found-country-highlights">
+						<label for="hide-found-country-highlights"><span>Don't highlight found countries</span></label>
+					</div>
+					<div class="settings-item">
+						<input type="checkbox" id="hide-country-borders">
+						<label for="hide-country-borders"><span>Don't show country borders</span></label>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>Actions</legend>
+					<button class="btn" id="clear-cookie" type="button" onclick="deleteGameData()">Clear settings
+						cookie</button>
+				</fieldset>
+			</form>
+			<p class="center warning-text">⚠ Saving settings will restart your game. ⚠</p>
+			<button type="submit" class="btn btn-primary" id="settings-save-btn">Save ✔</button>
+			<button class="btn" id="settings-close-btn">✖</button>
+		</div>
+	</div>
+
+	<!-- About dialog -->
+	<div id="about" class="dialog-background">
+		<div class="dialog">
+			<h2>About</h2>
+			<p>This game was created by <a href="https://ajsmith.us">Andy Smith</a>.</p>
+			<p>The initial inspiration for this game came after experimenting with OpenAI's <a href="https://openai.com/blog/chatgpt/" target="_blank" rel="noopener noreferrer">ChatGPT</a> and asking it to generate some code for a map quiz game.</p>
+			<h4>Credits</h4>
+			<ul>
+				<li><a href="https://www.naturalearthdata.com/">Natural Earth</a> for country outline data</li>
+				<li><a href="https://leafletjs.com/">Leaflet</a> for the interactive map</li>
+				<li><a href="https://openai.com/blog/chatgpt/">ChatGPT</a> for code suggestion</li>
+			</ul>
+			<h4>Disclaimer</h4>
+			<p>This game is solely for entertainment purposes and is not intended to make any political statements or endorsements regarding country borders. The data used in the game is sourced from Natural Earth and is presented as a means of teaching geographical concepts and information. The developer of the game is not responsible for any perceived political connotations or interpretations of the data presented in the game.</p>
+			<button class="btn" id="about-close-btn">✖</button>
+		</div>
+	</div>
+
+	<!-- Header buttons -->
+	<div class="header-btn-container">
+		<button id="reset-btn" class="header-btn" onclick="location.reload()" data-tooltip="Restart">
+			<img src="reset.svg">
+		</button>
+		<button id="settings-btn" class="header-btn" data-tooltip="Game Settings">
+			<img src="settings.svg">
+		</button>
+		<button id="about-btn" class="header-btn" data-tooltip="About">
+			<img src="about.svg">
+		</button>
+	</div>
+
+	<!-- Scripts -->
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+	<script src="script.js"></script>
+</body>
+
+</html>
