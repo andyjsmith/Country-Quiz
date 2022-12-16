@@ -18,7 +18,21 @@ Sort by TYPE, find the non-countries, and delete them or merge them with their m
 
 To merge countries, hold shift to select multiple. Go to Edit -> Edit Geometry -> Merge Selected Features. Make sure the Merge row is the correct main country to merge into. If not, highlight the row and select "Take attributes from selected feature".
 
-Export the map as GeoJSON. Go to Layer -> Save As..., select GeoJSON format, set the file name to countries.geojson, deselect all fields, select NAME_EN, and change the NAME_EN export name to "name".
+Sort by CONTINENT, and change any of the "Seven seas (open ocean)" entries to a continent:
+
+- Mauritius -> Africa
+- Seychelles -> Africa
+- Maldives -> Asia
+
+Export the map as GeoJSON:
+
+1. Go to Layer -> Save As...
+2. Select GeoJSON format
+3. Set the file name to countries.geojson
+4. Deselect all fields
+5. Select NAME_EN and change the export name to "name"
+6. Select CONTINENT and change the export name to "region"
+7. Under Layer Options, set COORDINATE_PRECISION to 3
 
 ## Credits
 

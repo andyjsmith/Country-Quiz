@@ -8,6 +8,7 @@ var gameData = {
 		hideFoundCountryHighlights: false,
 		hideCountryBorders: false,
 	},
+	region: "All",
 };
 
 let score = 0;
@@ -24,6 +25,15 @@ const gameModeLearning = document.getElementById("gamemode-learning");
 const gameModeTimeTrial = document.getElementById("gamemode-timetrial");
 const gameModeExploration = document.getElementById("gamemode-exploration");
 const gameModeDescription = document.getElementById("gamemode-description");
+
+const regionAll = document.getElementById("region-all");
+const regionAfrica = document.getElementById("region-africa");
+const regionAsia = document.getElementById("region-asia");
+const regionEurope = document.getElementById("region-europe");
+const regionNorthAmerica = document.getElementById("region-northamerica");
+const regionSouthAmerica = document.getElementById("region-southamerica");
+const regionOceania = document.getElementById("region-oceania");
+
 const scoreLine = document.getElementById("score-line");
 const scoreBox = document.getElementById("score-box");
 const timeLine = document.getElementById("time");
@@ -74,6 +84,23 @@ function populateSettingsDialog() {
 		gameModeExploration.checked = true;
 	}
 
+	// Region
+	if (gameData.region == "All") {
+		regionAll.checked = true;
+	} else if (gameData.region == "Africa") {
+		regionAfrica.checked = true;
+	} else if (gameData.region == "Asia") {
+		regionAsia.checked = true;
+	} else if (gameData.region == "Europe") {
+		regionEurope.checked = true;
+	} else if (gameData.region == "North America") {
+		regionNorthAmerica.checked = true;
+	} else if (gameData.region == "South America") {
+		regionSouthAmerica.checked = true;
+	} else if (gameData.region == "Oceania") {
+		regionOceania.checked = true;
+	}
+
 	// Time trial
 	document.getElementById("timetrial-duration-minutes").value = Math.floor(
 		gameData.timeTrialDuration / 60
@@ -100,6 +127,12 @@ function saveSettingsDialog() {
 	let gamemodeEl = document.querySelector('input[name="gamemode"]:checked');
 	if (gamemodeEl) {
 		gameData.gamemode = gamemodeEl.value;
+	}
+
+	// Region mode
+	let regionEl = document.querySelector('input[name="region"]:checked');
+	if (regionEl) {
+		gameData.region = regionEl.value;
 	}
 
 	// Time trial
@@ -371,8 +404,6 @@ fetch("countries.geojson")
 							feature.properties.name;
 						document.getElementById("correct-country").innerText =
 							currentCountryName;
-
-						nextCountry();
 					}
 				});
 
@@ -434,9 +465,20 @@ fetch("countries.geojson")
 		}).addTo(map);
 
 		// get a list of all the country names from the GeoJSON data
-		const countryNames = data.features.map(
-			(feature) => feature.properties.name
-		);
+		let countryNames;
+		if (gameData.region === "" || gameData.region === "All") {
+			// get all countries
+			countryNames = data.features.map(
+				(feature) => feature.properties.name
+			);
+		} else {
+			// get countries in the selected region
+			countryNames = data.features
+				.filter(
+					(feature) => feature.properties.region === gameData.region
+				)
+				.map((feature) => feature.properties.name);
+		}
 		shuffledCountries = countryNames.sort(() => Math.random() - 0.5);
 		numCountries = shuffledCountries.length;
 

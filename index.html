@@ -33,14 +33,14 @@
 
 	<!-- Game over dialog -->
 	<div id="game-over" class="dialog">
-		<p>Game Over</p>
+		<h2>Game Over</h2>
 		<p id="game-over-text">You selected <span id="incorrect-country"></span> instead of <span id="correct-country"></span>.</p>
 		<button onclick="location.reload()" class="btn btn-danger">Try Again</button>
 	</div>
 
 	<!-- Win dialog -->
 	<div id="you-win" class="dialog">
-		<p>You win!</p>
+		<h2>You win!</h2>
 		<p>You selected all of the countries correctly.</p>
 		<button onclick="location.reload()" class="btn">Play Again</button>
 	</div>
@@ -50,6 +50,25 @@
 		<div class="dialog">
 			<h2>Settings</h2>
 			<form>
+				<!-- Region -->
+				<fieldset>
+					<legend>Region</legend>
+					<input type="radio" id="region-all" name="region" value="All" checked>
+					<label for="region-all"><span>All</span></label>
+					<input type="radio" id="region-africa" name="region" value="Africa">
+					<label for="region-africa"><span>Africa</span></label>
+					<input type="radio" id="region-asia" name="region" value="Asia">
+					<label for="region-asia"><span>Asia</span></label>
+					<input type="radio" id="region-europe" name="region" value="Europe">
+					<label for="region-europe"><span>Europe</span></label>
+					<input type="radio" id="region-northamerica" name="region" value="North America">
+					<label for="region-northamerica"><span>North America</span></label>
+					<input type="radio" id="region-southamerica" name="region" value="South America">
+					<label for="region-southamerica"><span>South America</span></label>
+					<input type="radio" id="region-oceania" name="region" value="Oceania">
+					<label for="region-oceania"><span>Oceania</span></label>
+				</fieldset>
+				<!-- Game mode -->
 				<fieldset>
 					<legend>Game Mode</legend>
 					<input type="radio" id="gamemode-normal" name="gamemode" value="normal" checked>
@@ -62,6 +81,7 @@
 					<label for="gamemode-exploration"><span>Exploration</span></label>
 					<div id="gamemode-description">Description</div>
 				</fieldset>
+				<!-- Time trial -->
 				<fieldset id="timetrial-options">
 					<legend>Time Trial Duration</legend>
 					<input type="number" min="0" max="999" id="timetrial-duration-minutes">
@@ -69,6 +89,7 @@
 					<input type="number" min="0" max="59" id="timetrial-duration-seconds">
 					<label for="timetrial-duration-seconds">secs</label>
 				</fieldset>
+				<!-- Options -->
 				<fieldset>
 					<legend>Options</legend>
 					<div class="settings-item">
@@ -76,6 +97,7 @@
 						<label for="show-time-checkbox"><span>Show Elapsed Time</span></label>
 					</div>
 				</fieldset>
+				<!-- Hard mode -->
 				<fieldset>
 					<legend>Hard Mode</legend>
 					<div class="settings-item">
@@ -92,12 +114,14 @@
 						<label for="hide-country-borders"><span>Don't show country borders</span></label>
 					</div>
 				</fieldset>
+				<!-- Actions -->
 				<fieldset>
 					<legend>Actions</legend>
 					<button class="btn" id="clear-cookie" type="button" onclick="deleteGameData()">Clear settings
 						cookie</button>
 				</fieldset>
 			</form>
+			<!-- Save/close settings -->
 			<p class="center warning-text">⚠ Saving settings will restart your game. ⚠</p>
 			<button type="submit" class="btn btn-primary" id="settings-save-btn">Save ✔</button>
 			<button class="btn" id="settings-close-btn">✖</button>
