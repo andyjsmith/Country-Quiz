@@ -6,7 +6,6 @@ var gameData = {
 	hardMode: {
 		hideHoverHighlight: false,
 		hideFoundCountryHighlights: false,
-		hideCountryBorders: false,
 	},
 	region: "All",
 };
@@ -117,8 +116,6 @@ function populateSettingsDialog() {
 		gameData.hardMode.hideHoverHighlight;
 	document.getElementById("hide-found-country-highlights").checked =
 		gameData.hardMode.hideFoundCountryHighlights;
-	document.getElementById("hide-country-borders").checked =
-		gameData.hardMode.hideCountryBorders;
 }
 
 // Save the settings dialog to gameData
@@ -155,9 +152,6 @@ function saveSettingsDialog() {
 	).checked;
 	gameData.hardMode.hideFoundCountryHighlights = document.getElementById(
 		"hide-found-country-highlights"
-	).checked;
-	gameData.hardMode.hideCountryBorders = document.getElementById(
-		"hide-country-borders"
 	).checked;
 }
 
@@ -404,6 +398,17 @@ fetch("countries.geojson")
 							feature.properties.name;
 						document.getElementById("correct-country").innerText =
 							currentCountryName;
+
+						if (gameData.gamemode == "learning") {
+							if (shuffledCountries.length === 0) {
+								document
+									.getElementById("you-win")
+									.classList.add("show");
+								gameOver = true;
+								clearInterval(timeInterval);
+							}
+							nextCountry();
+						}
 					}
 				});
 
